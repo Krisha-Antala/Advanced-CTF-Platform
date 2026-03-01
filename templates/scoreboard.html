@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Scoreboard - CTF Platform{% endblock %}
+
+{% block content %}
+<style>
+    .rank-1 {
+        color: gold !important;
+    }
+
+    .rank-2 {
+        color: silver !important;
+    }
+
+    .rank-3 {
+        color: #cd7f32 !important;
+    }
+</style>
+<div class="navbar">
+    <div class="user-display">
+        <span class="glitch-text">SCOREBOARD</span>
+    </div>
+    <a href="/dashboard">Back to Dashboard</a>
+</div>
+
+<div class="center-screen" style="align-items: flex-start; margin-top: 2rem;">
+    <div class="card" style="max-width: 800px; width: 100%;">
+        <h2 class="glitch-header" data-text="FASTEST HACKERS">FASTEST HACKERS</h2>
+        <p style="text-align: center; color: var(--color-text); margin-bottom: 20px;">
+            <b>Note: Faster solve times result in a higher rank!</b>
+        </p>
+
+        <div style="overflow-x: auto;">
+            <table style="width:100%; margin-top:20px; border-collapse:separate; border-spacing: 0 10px;">
+                <thead>
+                    <tr>
+                        <th
+                            style="text-align: left; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">
+                            Rank</th>
+                        <th
+                            style="text-align: left; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">
+                            Username</th>
+                        <th
+                            style="text-align: right; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">
+                            Score</th>
+                        <th
+                            style="text-align: right; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">
+                            Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr style="background: rgba(255,255,255,0.05); transition: 0.3s;">
+                        <td style="padding: 15px; border-radius: 8px 0 0 8px;">
+                            <span class="rank-{{ loop.index }}"
+                                style="font-family: var(--font-mono); font-weight: bold;">
+                                #{{ loop.index }}
+                            </span>
+                        </td>
+                        <td style="padding: 15px; font-weight: 500;">{{ u[0] }}</td>
+                        <td style="padding: 15px; text-align: right; color: var(--color-secondary); font-weight: bold;">
+                            {{ u[1] }}</td>
+                        <td
+                            style="padding: 15px; text-align: right; border-radius: 0 8px 8px 0; color: var(--color-secondary); font-weight: bold;">
+                            {{ u[2] }}s</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="navbar">
+    <div class="user-display">
+        <span class="glitch-text">CTF DASHBOARD</span>
+    </div>
+    <div>
+        <a href="/scoreboard" style="margin-right: 20px;">Scoreboard</a>
+        <a href="/logout" class="text-error">Logout</a>
+    </div>
+</div>
+
+<h2 class="glitch-header" data-text="CHALLENGES">CHALLENGES</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    {% for c in challenges %}
+    <div class="card">
+        <h3>{{ c[1] }}</h3>
+        <p style="color: var(--color-text-muted); margin: 10px 0;">
+            Level: <span style="color: var(--color-primary);">{{ c[5] }}</span> |
+            Points: <span style="color: var(--color-secondary);">{{ c[4] }}</span>
+        </p>
+        <a href="/challenge/{{ c[0] }}"><button style="margin-top: 10px;">Open Challenge</button></a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

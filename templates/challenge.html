@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}{{ ch[1] }} - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="navbar">
+    <a href="/dashboard">⬅ Dashboard</a>
+    <a href="/logout" class="text-error">Logout</a>
+</div>
+
+<div class="center-screen" style="align-items: flex-start; margin-top: 2rem;">
+    <div class="card" style="max-width: 800px;">
+        <h2 class="glitch-header" data-text="{{ ch[1] }}">{{ ch[1] }}</h2>
+        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-primary-dim); margin-bottom: 2rem;">
+            <p>{{ ch[2] }}</p>
+        </div>
+
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
+
+        <!-- DYNAMIC CONTENT -->
+        {% if ch[0] == 1 %}
+            <!-- SQL INJECTION FORM -->
+             <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px dashed var(--color-primary); border-radius: 8px; margin-bottom: 2rem;">
+                <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Step 1: Hack the System</h4>
+                <p style="margin-bottom: 1rem; color: #ccc;">Bypass the authentication below to retrieve the flag.</p>
+
+                <h3 style="color: var(--color-error); margin-bottom: 1rem;">Admin Login Portal</h3>
+                <form method="POST">
+                    <input name="admin_user" placeholder="Admin Username" style="margin-bottom: 10px;">
+                    <input name="admin_pass" type="password" placeholder="Password" style="margin-bottom: 10px;">
+                    <button type="submit" style="background: var(--color-error); width: auto; padding: 10px 20px; font-size: 0.9rem;">Login</button>
+                </form>
+             </div>
+
+             <h4 style="color: var(--color-primary); margin-top: 2rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Step 2: Submit Flag</h4>
+             <p style="margin-bottom: 1rem; color: #ccc;">Enter the flag you found above.</p>
+
+        {% elif ch[0] == 2 %}
+            <!-- XSS CHALLENGE -->
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px dashed var(--color-primary); border-radius: 8px; margin-bottom: 2rem;">
+                <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; text-transform: uppercase;">Step 1: Inject Script</h4>
+                <p style="margin-bottom: 1rem; color: #ccc;">Post a comment containing a <code>&lt;script&gt;</code> tag.</p>
+
+                <!-- Comment Form -->
+                <form method="POST" style="margin-bottom: 20px;">
+                    <textarea name="comment" placeholder="Write a comment..." style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid #444; color: #fff; border-radius: 4px; min-height: 80px;"></textarea>
+                    <button type="submit" style="margin-top: 10px; width: auto; padding: 8px 16px;">Post Comment</button>
+                </form>
+
+                <!-- Display Comments (Vulnerable Area) -->
+                {% if xss_content %}
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px;">
+                    <strong style="color: var(--color-secondary);">Last Comment:</strong>
+                    <div style="margin-top: 5px; color: #fff;">
+                        <!-- VULNERABILITY: 'safe' filter renders HTML/JS! -->
+                        {{ xss_content | safe }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <h4 style="color: var(--color-primary); margin-top: 2rem; margin-bottom: 0.5rem; text-transform: uppercase;">Step 2: Submit Flag</h4>
+
+            <h4 style="color: var(--color-primary); margin-top: 2rem; margin-bottom: 0.5rem; text-transform: uppercase;">Step 2: Submit Flag</h4>
+
+        {% elif ch[0] == 3 %}
+             <!-- BUFFER OVERFLOW CHALLENGE -->
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px dashed var(--color-primary); border-radius: 8px; margin-bottom: 2rem;">
+                <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; text-transform: uppercase;">Step 1: Overflow the Buffer</h4>
+                <p style="margin-bottom: 1rem; color: #ccc;">The system has a buffer of <strong>16 bytes</strong>. Try to overflow it to overwrite the return pointer.</p>
+
+                 <!-- Buffer Form -->
+                <form method="POST" style="margin-bottom: 10px;">
+                    <div style="display: flex; gap: 10px;">
+                        <input name="buffer_input" placeholder="Enter valid input string..." style="flex: 1; margin:0;" autocomplete="off">
+                        <button type="submit" style="width: auto; margin:0; padding: 10px 20px;">Send Payload</button>
+                    </div>
+                </form>
+                <small style="color: #666;">(Hint: Input length matters)</small>
+            </div>
+
+            <h4 style="color: var(--color-primary); margin-top: 2rem; margin-bottom: 0.5rem; text-transform: uppercase;">Step 2: Submit Flag</h4>
+
+        {% elif ch[0] == 4 %}
+            <!-- CRYPTO CHALLENGE -->
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px dashed var(--color-secondary); border-radius: 8px; margin-bottom: 2rem; text-align: center;">
+                <h3 style="color: var(--color-secondary);">Intercepted Message:</h3>
+                <h1 style="font-family: var(--font-mono); letter-spacing: 5px; color: #fff; margin: 15px 0;">{{ ciphertext }}</h1>
+                <p style="font-size: 0.9rem; color: #aaa;">Decrypt this using Caesar Cipher (+3) and submit as CTF{PLAINTEXT}</p>
+            </div>
+        {% endif %}
+
+        <!-- ================= FLAG FORM ================= -->
+        <form method="POST">
+            <!-- Honeypot -->
+            <input type="text" name="email" style="display:none">
+
+            <!-- Label removed since we added Step 2 header above -->
+            <!-- <label style="color: var(--color-primary); font-weight: bold;">Submit Flag:</label> -->
+            <input
+                type="text"
+                name="flag"
+                placeholder="CTF{...}"
+                required
+            >
+
+            {% if suspicious %}
+                <!-- CAPTCHA SHOWN ONLY IF SUSPICIOUS -->
+                <div style="margin-top: 1rem; padding: 1rem; border: 1px solid var(--color-error); border-radius: 8px; background: rgba(255, 51, 102, 0.1);">
+                    <label class="text-error">
+                        ⚠️ Security Check: What is 3 + 4?
+                    </label>
+                    <input type="text" name="captcha" placeholder="Answer" required>
+                </div>
+            {% endif %}
+
+            <button type="submit">Submit Flag</button>
+        </form>
+
+        <!-- ================= MESSAGES ================= -->
+        {% if msg %}
+            <div class="mt-4 text-center">
+                <p class="text-error" style="background: rgba(255,51,102,0.1); padding: 10px; border-radius: 4px;">
+                    {{ msg }}
+                </p>
+            </div>
+        {% endif %}
+
+        {% if solved %}
+            <div class="mt-4 text-center">
+                <p class="text-success" style="background: rgba(0,255,204,0.1); padding: 10px; border-radius: 4px; border: 1px solid var(--color-primary);">
+                    ✔ Challenge solved
+                    {% if solve_time %}
+                        <br><span style="font-size: 0.9em; font-weight: normal;">⏱ Solve Time: {{ solve_time }} seconds</span>
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 3rem; text-align: center;">
+            <p style="font-size:12px; color: var(--color-text-muted); opacity: 0.5;">
+                Practice mode & AI-bot detection enabled
+            </p>
+        </div>
+    </div>
+</div>

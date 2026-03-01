@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Background Canvas -->
+    <canvas id="matrix"></canvas>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- ================= GLOBAL AI HELPER WIDGET ================= -->
+    <div id="ai-helper-icon"
+         style="position: fixed; bottom: 20px; right: 20px;
+                background: var(--color-primary); color: #fff;
+                border-radius: 50%; width: 52px; height: 52px;
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.35); z-index: 9999;"
+         title="CTF Helper">💡</div>
+
+    <div id="ai-helper-chat"
+         style="position: fixed; bottom: 84px; right: 20px;
+                width: 320px; height: 420px; background: #121212; color: #fff;
+                border-radius: 12px; display: none; flex-direction: column;
+                box-shadow: 0 10px 24px rgba(0,0,0,0.5); z-index: 9999; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="padding: 10px; background: var(--color-primary); border-radius: 12px 12px 0 0; display:flex; justify-content:space-between; align-items:center;">
+            <strong>⚡ CTF Helper AI</strong>
+            <button id="ai-helper-close" style="background: transparent; border: none; color: #fff; font-size: 18px; cursor: pointer;">✕</button>
+        </div>
+        <div id="chat-messages" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 0.9rem;">
+            <p><em>Ask about SQLi, XSS, Buffer Overflow, or Crypto. I’ll tailor hints to this challenge.</em></p>
+        </div>
+        <form id="chat-form" style="display: flex; border-top: 1px solid #333;">
+            <input type="text" id="chat-input" placeholder="Type your question..."
+                   style="flex: 1; padding: 10px; border: none; background: #1e1e1e; color: #fff;">
+            <button type="submit" style="padding: 10px 14px; background: var(--color-primary); border: none; color: #fff;">➤</button>
+        </form>
+    </div>
+
+    <!-- Interactive Particles Script -->
+    <script src="{{ url_for('static', filename='particles.js') }}"></script>
+
+    <!-- Load AI helper script -->
+    <script src="{{ url_for('static', filename='js/ai_helper.js') }}"></script>
+
+</body>
+</html>
