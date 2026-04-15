@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="landing-container">
+    <div class="terminal-card">
+        <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">CTF instructions</span>
+        </div>
+
+        <div class="terminal-body">
+            <section class="mb-6">
+                <h1 class="glitch-text mb-4">🚩 Welcome to the CTF Competition</h1>
+                <p class="text-muted">Welcome to the Capture The Flag (CTF) Competition Portal.</p>
+                <p class="text-muted">This competition is designed to evaluate your cybersecurity fundamentals,
+                    problem-solving skills, and ethical hacking knowledge in a controlled and monitored environment.</p>
+                <div class="info-box info">
+                    <p>Please read all instructions carefully before starting.<br>
+                        By proceeding, you agree to follow all rules outlined below.</p>
+                </div>
+            </section>
+
+            <section class="grid-2 mb-6">
+                <div class="sub-card">
+                    <h3>🧩 Competition Overview</h3>
+                    <ul>
+                        <li><span class="highlight">🧠 Total Challenges:</span> 4</li>
+                        <li><span class="highlight">🔐 Categories:</span> SQLi, XSS, BOF, Crypto</li>
+                        <li><span class="highlight">🎯 Objective:</span> Solve challenges & capture flags</li>
+                        <li><span class="highlight">🏁 End Condition:</span> Explicit finish required</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>⏱️ Monitoring</h3>
+                    <ul>
+                        <li><span class="highlight">🕒 Time:</span> Solve time is recorded</li>
+                        <li><span class="highlight">🤖 Bot Detection:</span> Active monitoring</li>
+                        <li><span class="highlight">🛡️ Security:</span> Anti-cheat enabled</li>
+                        <li><span class="highlight">🧩 CAPTCHA:</span> Triggered if suspicious</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="mb-6">
+                <h3 class="text-error">⚠️ IMPORTANT INSTRUCTIONS (READ CAREFULLY)</h3>
+
+                <div class="policy-grid">
+                    <div class="policy-item">
+                        <h4>🔒 Screen Lock Policy</h4>
+                        <p>Once you click Start Competition, your screen will be locked in competition mode.</p>
+                        <p>You cannot exit, reload, or navigate away. Your screen will be unlocked only when you click
+                            <span class="text-success">Finish Competition</span> or <span class="text-success">Complete
+                                Competition</span>.
+                        </p>
+                        <div class="warning">
+                            ⚠️ Closing the browser, refreshing, or force exiting may result in automatic
+                            disqualification.
+                        </div>
+                    </div>
+
+                    <div class="policy-item">
+                        <h4>🤖 AI Usage Policy</h4>
+                        <p>AI agents (ChatGPT etc.) are allowed, but with modified scoring:</p>
+                        <table class="ai-table">
+                            <thead>
+                                <tr>
+                                    <th>Condition</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>AI-assisted flags</td>
+                                    <td><span class="text-success">✅ Accepted</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Points for AI solves</td>
+                                    <td><span class="text-error">❌ 0 points</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Manual solving</td>
+                                    <td><span class="text-success">✅ Full points</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-2 small text-muted">✔ AI usage is monitored. AI-assisted solves are marked as
+                            Practice Mode.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-6 grid-2">
+                <div class="sub-card">
+                    <h3>🧠 Fair Play & Ethics</h3>
+                    <ul class="ethics-list">
+                        <li>Solve challenges individually</li>
+                        <li>Do not share flags or solutions</li>
+                        <li>Do not bypass platform security</li>
+                        <li>Do not attack infrastructure outside challenges</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>🏁 Completion Rules</h3>
+                    <p>You must explicitly click <span class="highlight">Finish Competition</span>.</p>
+                    <p>Only then will your screen unlock, final score be calculated, and results be saved.</p>
+                </div>
+            </section>
+
+            <section class="confirmation-section">
+                <h3>✅ Final Confirmation</h3>
+                <p>Before starting, ensure that you understand the screen lock behavior, accept the AI usage scoring
+                    rules, and agree to follow ethical hacking practices.</p>
+
+                <div style="margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <input type="checkbox" id="rules-checkbox" style="width: 20px; height: 20px; cursor: pointer;">
+                    <label for="rules-checkbox"
+                        style="color: var(--color-primary); cursor: pointer; font-weight: bold;">
+                        I have read all the instructions carefully
+                    </label>
+                </div>
+
+                <div class="start-action mt-6">
+                    <h2 class="mb-4">🔓 Ready to Begin?</h2>
+                    <p class="mb-6">When you click Start Competition, your session begins immediately and the screen
+                        will lock.</p>
+                    <form method="POST">
+                        <button type="submit" class="start-button">START COMPETITION</button>
+                    </form>
+                    <p class="mt-4 italic">🎯 Think carefully. Hack ethically. Learn deeply.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<style>
+    .landing-container {
+        padding: 40px 0;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .terminal-card {
+        background: rgba(16, 23, 41, 0.95);
+        border: 1px solid var(--color-primary);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(0, 255, 204, 0.15);
+    }
+
+    .terminal-header {
+        background: #1e1e1e;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .red {
+        background: #ff5f56;
+    }
+
+    .yellow {
+        background: #ffbd2e;
+    }
+
+    .green {
+        background: #27c93f;
+    }
+
+    .terminal-title {
+        color: #888;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        font-family: var(--font-mono);
+    }
+
+    .terminal-body {
+        padding: 40px;
+        color: #e0e6ed;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    h3 {
+        color: var(--color-primary);
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .mb-6 {
+        margin-bottom: 2.5rem;
+    }
+
+    .mt-6 {
+        margin-top: 2.5rem;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .sub-card {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 3px solid var(--color-primary);
+    }
+
+    .sub-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sub-card li {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .highlight {
+        color: var(--color-secondary);
+        font-weight: 600;
+    }
+
+    .policy-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .policy-item {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 25px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .policy-item h4 {
+        margin-bottom: 15px;
+        color: var(--color-accent);
+        font-size: 1.1rem;
+    }
+
+    .warning {
+        background: rgba(255, 51, 102, 0.1);
+        border: 1px solid var(--color-error);
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    .ai-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+    }
+
+    .ai-table th,
+    .ai-table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .confirmation-section {
+        background: linear-gradient(180deg, transparent, rgba(0, 255, 204, 0.05));
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px dashed var(--color-primary-dim);
+    }
+
+    .start-button {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        color: #0b1021;
+        padding: 20px 60px;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+        transition: 0.3s;
+        animation: pulse-border 2s infinite;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-family: var(--font-header);
+    }
+
+    .start-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 50px rgba(0, 255, 204, 0.6);
+        color: #000;
+    }
+
+    @keyframes pulse-border {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 15px rgba(0, 255, 204, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(0, 255, 204, 0);
+        }
+    }
+
+    .italic {
+        font-style: italic;
+        opacity: 0.7;
+    }
+</style>
+
+<script>
+    // Note: True screen locking requires user interaction and browser support (Fullscreen API)
+    // Here we simulate the intent with a confirmation dialog.
+    // Enforce rules checkbox
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const checkbox = document.getElementById('rules-checkbox');
+        if (!checkbox.checked) {
+            e.preventDefault();
+            alert("Please read all the instructions carefully and check the box to proceed.");
+            return;
+        }
+
+        if (!confirm("By starting, you agree to enter competition mode. Your screen will be 'locked' to this browser context. Proceed?")) {
+            e.preventDefault();
+        }
+    });
+
+    // Warn on refresh or close
+    window.addEventListener('beforeunload', function (e) {
+        // Only trigger if we are not navigating to the login page
+        // (In a real app, you'd track the 'started' state in session)
+    });
+</script>
+{% endblock %}

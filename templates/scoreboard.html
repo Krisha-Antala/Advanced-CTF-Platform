@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Scoreboard - CTF Platform{% endblock %}
+
+{% block content %}
+<style>
+    .rank-1 {
+        color: gold !important;
+    }
+
+    .rank-2 {
+        color: silver !important;
+    }
+
+    .rank-3 {
+        color: #cd7f32 !important;
+    }
+</style>
+<div class="navbar"
+    style="position: relative; display: flex; justify-content: center; align-items: center; padding: 2rem 0;">
+    <a href="/dashboard"
+        style="position: absolute; left: 0; color: var(--color-primary); border: 1px solid var(--color-primary); padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; background: rgba(0, 255, 204, 0.1); display: flex; align-items: center; gap: 8px; transition: 0.3s; z-index: 10;">
+        <span style="font-size: 1.2rem;">←</span> Dashboard
+    </a>
+    <div class="user-display" style="text-align: center;">
+        <h1 class="glitch-header" data-text="SCOREBOARD" style="margin: 0; font-size: 2.5rem;">SCOREBOARD</h1>
+    </div>
+</div>
+
+<div class="center-screen" style="align-items: flex-start; margin-top: 2rem;">
+    <div class="card" style="max-width: 800px; width: 100%;">
+        <h2 class="glitch-header" data-text="FASTEST HACKERS">FASTEST HACKERS</h2>
+        <p style="text-align: center; color: var(--color-text); margin-bottom: 20px;">
+            <b>Note: Faster solve times result in a higher rank!</b>
+        </p>
+
+        <div style="overflow-x: auto;">
+            {% set active_tier = namespace(val=0) %}
+            
+            <table style="width:100%; margin-top:20px; border-collapse:separate; border-spacing: 0 10px;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">Rank</th>
+                        <th style="text-align: left; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">Username</th>
+                        <th style="text-align: right; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">Score</th>
+                        <th style="text-align: right; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">Time</th>
+                        <th style="text-align: center; padding: 15px; color: var(--color-primary); border-bottom: 1px solid var(--color-primary);">Switches</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        {# Determine Tier #}
+                        {% if not u[3] and u[4] == 0 %}
+                            {% set current_row_tier = 1 %}
+                            {% set tier_name = "ELITE - CLEAN EXECUTION" %}
+                            {% set tier_color = "var(--color-primary)" %}
+                        {% elif u[3] and u[4] == 0 %}
+                            {% set current_row_tier = 2 %}
+                            {% set tier_name = "AUGMENTED - AI ASSISTED" %}
+                            {% set tier_color = "#3498db" %}
+                        {% elif not u[3] and u[4] > 0 %}
+                            {% set current_row_tier = 3 %}
+                            {% set tier_name = "COMPROMISED - UNASSISTED" %}
+                            {% set tier_color = "#f39c12" %}
+                        {% else %}
+                            {% set current_row_tier = 4 %}
+                            {% set tier_name = "FLAGGED - AI & SWITCHES" %}
+                            {% set tier_color = "var(--color-error)" %}
+                        {% endif %}
+
+                        {% if active_tier.val != current_row_tier %}
+                            <tr class="tier-divider">
+                                <td colspan="5" style="padding: 30px 10px 10px 10px;">
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <span style="color: {{ tier_color }}; font-family: var(--font-mono); font-weight: 900; letter-spacing: 2px; font-size: 0.9rem;">
+                                            // {{ tier_name }} //
+                                        </span>
+                                        <div style="flex: 1; height: 1px; background: linear-gradient(90deg, {{ tier_color }}, transparent);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% set active_tier.val = current_row_tier %}
+                        {% endif %}
+
+                        <tr style="background: rgba(255,255,255,0.05); transition: 0.3s;" class="hacker-row">
+                            <td style="padding: 15px; border-radius: 8px 0 0 8px;">
+                                <span class="rank-{{ loop.index }}" style="font-family: var(--font-mono); font-weight: bold;">
+                                    #{{ loop.index }}
+                                </span>
+                            </td>
+                            <td style="padding: 15px; font-weight: 500;">
+                                {{ u[0] }}
+                                {% if u[3] %}
+                                <span style="color: #3498db; font-size: 0.7rem; margin-left: 8px; border: 1px solid #3498db; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">AI Assisted</span>
+                                {% endif %}
+                                {% if u[4] > 0 %}
+                                <span style="color: var(--color-error); font-size: 0.7rem; margin-left: 4px; border: 1px solid var(--color-error); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Tab Switches</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 15px; text-align: right; color: var(--color-secondary); font-weight: bold;">
+                                {{ u[1] }}</td>
+                            <td style="padding: 15px; text-align: right; color: var(--color-secondary); font-weight: bold;">
+                                {{ u[2] }}s</td>
+                            <td style="padding: 15px; text-align: center; border-radius: 0 8px 8px 0; color: {% if u[4] > 0 %}var(--color-error){% else %}var(--color-primary){% endif %}; font-weight: bold; font-family: var(--font-mono);">
+                                {{ u[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="navbar" style="justify-content: flex-start; gap: 2rem; flex-wrap: wrap;">
+    <div class="user-display">
+        <span class="glitch-text" style="font-size: 1.5rem;">CTF DASHBOARD</span>
+    </div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <a href="/report"
+            style="color: var(--color-primary); font-weight: bold; border: 1px solid var(--color-primary-dim); padding: 5px 15px; border-radius: 4px; background: rgba(0, 255, 204, 0.05);">View
+            Project Report</a>
+        <a href="/scoreboard"
+            style="color: var(--color-secondary); font-weight: bold; border: 1px solid rgba(0, 119, 255, 0.3); padding: 5px 15px; border-radius: 4px; background: rgba(0, 119, 255, 0.05);">Scoreboard</a>
+        <a href="/exit_portal">
+            <button class="text-error"
+                style="border: 1px solid var(--color-error); padding: 5px 15px; border-radius: 4px; background: rgba(255, 51, 102, 0.1); cursor: pointer; display: inline-block; width: auto; margin: 0; box-shadow: none; font-size: 0.8rem;">Finish
+                Competition</button>
+        </a>
+    </div>
+</div>
+
+<h2 class="glitch-header" data-text="CHALLENGES">CHALLENGES</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    {% for c in challenges %}
+    <div class="card">
+        <h3>{{ c[1] }}</h3>
+        Level: <span style="color: var(--color-primary);">{{ c[5] }}</span> |
+        Points: <span style="color: var(--color-secondary);">{{ c[4] }}</span>
+        </p>
+        {% if c[6] %}
+        <p style="color: var(--color-primary); font-weight: bold; margin-bottom: 10px;">
+            ✅ SOLVED in {{ c[7] }}s
+        </p>
+        {% endif %}
+        <a href="/challenge/{{ c[0] }}"><button style="margin-top: 10px;">Open Challenge</button></a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

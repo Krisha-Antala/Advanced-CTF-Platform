@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Background Canvas -->
+    <canvas id="matrix"></canvas>
+
+    {% if username and request.endpoint not in ['login', 'register'] %}
+    <div class="user-profile-tag">
+        <div class="profile-avatar" onclick="window.location.href='/scoreboard'" title="View Scoreboard">
+            <span class="online-indicator"></span>
+            <span class="avatar-letter">{{ username[0]|upper }}</span>
+        </div>
+        <div class="profile-info">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                <span class="user-name">{{ username }}</span>
+                <span
+                    style="font-size: 0.7rem; color: var(--color-primary); font-family: var(--font-mono); font-weight: bold;">
+                    SOLVED: {{ solved_count }}/{{ total_challenges }}
+                </span>
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 4px;">
+                <span class="user-rank">SCORE: <span class="score-value" style="font-size: 1.1rem;">{{ user_score
+                        }}</span></span>
+                <span class="user-rank" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                    TIME: <span id="session-timer"
+                        style="color: var(--color-accent); font-family: var(--font-mono);">00:00:00</span>
+                </span>
+                <span class="user-rank" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                    SWITCHES: <span id="tab-switch-counter" style="color: #ff4b2b; font-family: var(--font-mono);">{{
+                        tab_switches }}</span>
+                    <span id="monitor-status" title="Monitoring Active"
+                        style="width: 6px; height: 6px; background: #fb2; border-radius: 50%; display: inline-block; margin-left: 5px; box-shadow: 0 0 5px #fb2;"></span>
+                </span>
+            </div>
+        </div>
+        <div class="profile-action">
+            <a href="javascript:void(0)" onclick="exitCompetition()" title="Exit Competition"
+                style="font-size: 1.4rem;">🔌</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Flash Notifications (Toasts) -->
+    <div class="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <span class="alert-icon">
+                {% if category == 'success' %}✓{% elif category == 'error' %}✕{% else %}ℹ{% endif %}
+            </span>
+            <span class="alert-message">{{ message }}</span>
+            <button class="alert-close" onclick="this.parentElement.style.display='none'">×</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- ================= GLOBAL AI HELPER WIDGET ================= -->
+    {% if username and request.endpoint not in ['login', 'register'] %}
+    {% include "floating_ai.html" %}
+    {% endif %}
+
+    <!-- Interactive Particles Script -->
+    <script src="{{ url_for('static', filename='particles.js') }}"></script>
+
+    <script>
+        (function () {
+            // 1. Session Configuration
+            const compStart = {{ comp_start | tojson or 'null'
+        }};
+        const timerEl = document.getElementById('session-timer');
+        const counterEl = document.getElementById('tab-switch-counter');
+        const statusEl = document.getElementById('monitor-status');
+        const currentUser = "{{ username or 'guest' }}";
+
+        const KEY_HEARTBEAT = `ctf_${currentUser}_heartbeat`;
+        const KEY_SWITCHES = `ctf_${currentUser}_switches`;
+
+        // 2. Live Timer System
+        if (compStart && timerEl) {
+            function updateTimer() {
+                if (window.ctfTimerStopped) return;
+                const now = Date.now();
+                const diff = now - compStart;
+                if (diff <= 0) return;
+                const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                timerEl.textContent = `${h}:${m}:${s}`;
+            }
+            window.ctfTimerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        // 3. Tab Switch Monitoring System
+        if (compStart) {
+            const HEARTBEAT_INTERVAL = 300;
+            const EXIT_GAP_THRESHOLD = 2000;
+
+            // Sync UI from localStorage
+            if (counterEl) {
+                const storedCount = localStorage.getItem(KEY_SWITCHES);
+                if (storedCount && parseInt(storedCount) > parseInt(counterEl.textContent)) {
+                    counterEl.textContent = storedCount;
+                }
+            }
+
+            // Listen for updates from other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === KEY_SWITCHES && counterEl) {
+                    counterEl.textContent = e.newValue;
+                    counterEl.style.color = '#fff';
+                    setTimeout(() => { counterEl.style.color = '#ff4b2b'; }, 500);
+                }
+            });
+
+            function updateHeartbeat() {
+                if (document.hasFocus()) {
+                    localStorage.setItem(KEY_HEARTBEAT, Date.now());
+                }
+            }
+
+            let isProcessingAlert = false;
+            function triggerAlert(gap) {
+                if (isProcessingAlert) return;
+                isProcessingAlert = true;
+
+                localStorage.setItem(KEY_HEARTBEAT, 'counting');
+                localStorage.setItem(`ctf_${currentUser}_last_event`, Date.now());
+
+                // Sync to backend
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon('/api/increment_tab_switch');
+                } else {
+                    fetch('/api/increment_tab_switch', { method: 'POST' });
+                }
+
+                // Update UI
+                let currentVal = parseInt(localStorage.getItem(KEY_SWITCHES) || (counterEl ? counterEl.textContent : "0")) || 0;
+                let newVal = currentVal + 1;
+                localStorage.setItem(KEY_SWITCHES, newVal);
+                if (counterEl) counterEl.textContent = newVal;
+
+                // Show Alert
+                alert(`SECURITY ALERT: Unauthorized tab switch detected! (${Math.round(gap / 1000)}s away)\nThis incident has been logged.`);
+
+                updateHeartbeat();
+                isProcessingAlert = false;
+            }
+
+            function checkExit() {
+                if (sessionStorage.getItem('portal_refreshing') || sessionStorage.getItem('exiting_competition') || isProcessingAlert) return;
+
+                const lastHb = localStorage.getItem(KEY_HEARTBEAT);
+                const lastEvent = localStorage.getItem(`ctf_${currentUser}_last_event`);
+
+                // If another tab is already counting or counted in the last 5 seconds, skip
+                if (lastHb === 'counting' || (lastEvent && (Date.now() - parseInt(lastEvent)) < 5000)) {
+                    updateHeartbeat();
+                    return;
+                }
+
+                const hbValue = parseInt(lastHb);
+                if (!lastHb || isNaN(hbValue)) {
+                    updateHeartbeat();
+                    return;
+                }
+
+                const gap = Date.now() - hbValue;
+                if (gap > EXIT_GAP_THRESHOLD && gap < 1800000) {
+                    triggerAlert(gap);
+                } else if (gap >= 1800000) {
+                    updateHeartbeat();
+                }
+            }
+
+            if (statusEl) {
+                statusEl.style.background = '#0f0';
+                statusEl.style.boxShadow = '0 0 10px #0f0';
+                statusEl.title = "Monitoring Online";
+            }
+
+            // Lifecycle & Performance
+            setInterval(updateHeartbeat, HEARTBEAT_INTERVAL);
+
+            let lastCheck = 0;
+            const debouncedCheck = () => {
+                const now = Date.now();
+                if (now - lastCheck < 1000) return; // Prevent multiple fires within 1s
+                lastCheck = now;
+                checkExit();
+            };
+
+            window.addEventListener('focus', debouncedCheck);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) debouncedCheck(); });
+            window.addEventListener('beforeunload', () => { sessionStorage.setItem('portal_refreshing', 'true'); });
+
+            setTimeout(() => { sessionStorage.removeItem('portal_refreshing'); }, 1500);
+            setTimeout(checkExit, 1000);
+            console.log("CTF Monitor Active: " + currentUser);
+        } else if (statusEl) {
+            statusEl.style.background = '#f00';
+            statusEl.style.boxShadow = '0 0 10px #f00';
+            statusEl.title = "Monitoring Inactive";
+        }
+        }) ();
+
+
+        // 3. Lockdown & Navigation Logic
+        // Disable Right Click
+        document.addEventListener("contextmenu", e => e.preventDefault());
+
+        // Disable DevTools / Refresh Keys
+        document.addEventListener("keydown", function (e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) ||
+                (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.keyCode == 82)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        function exitCompetition() {
+            sessionStorage.setItem('exiting_competition', 'true');
+            let pass = prompt("Enter Administration Exit Password to Finish:");
+            const EXIT_PASSWORD = "Exit";
+
+            if (pass === EXIT_PASSWORD) {
+                window.ctfTimerStopped = true;
+                if (window.ctfTimerInterval) clearInterval(window.ctfTimerInterval);
+                const hud = document.querySelector('.user-profile-tag');
+                if (hud) hud.style.display = 'none';
+
+                const modal = document.getElementById('thank-you-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    setTimeout(finishAppActions, 3000);
+                } else {
+                    alert("Thank you for participating!");
+                    finishAppActions();
+                }
+            } else {
+                sessionStorage.removeItem('exiting_competition');
+                if (pass !== null) {
+                    alert("Unauthorized Access Attempt Detected!");
+                }
+            }
+        }
+
+        function finishAppActions() {
+            if (window.pywebview && window.pywebview.api) {
+                window.pywebview.api.close_app();
+            } else {
+                window.location.href = '/logout';
+            }
+        }
+    </script>
+
+
+    <!-- Thank You Modal -->
+    <div id="thank-you-modal"
+        style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); 
+                 display:none; flex-direction:column; align-items:center; justify-content:center; z-index:20000; backdrop-filter: blur(10px);">
+        <div style="background: #111; border: 2px solid var(--color-primary); padding: 50px; border-radius: 20px; 
+                    text-align:center; box-shadow: 0 0 50px var(--color-primary-dim);">
+            <h1
+                style="color: var(--color-primary); font-family: var(--font-header); font-size: 3rem; margin-bottom: 20px; letter-spacing: 5px;">
+                PARTICIPATION RECORDED
+            </h1>
+            <p style="color: #fff; font-size: 1.2rem; margin-bottom: 40px; opacity: 0.8;">
+                Thank you for participating in the CTF Competition. <br>
+                Your final score and time have been successfully transmitted to the administration.
+            </p>
+            <div style="font-size: 5rem; margin-bottom: 40px;">🏆</div>
+            <button onclick="finishAppActions()" style="background: var(--color-primary); color: #000; font-weight:bold; padding: 15px 40px; 
+                       font-size: 1.2rem; border-radius: 50px; cursor:pointer;" class="animate-pulse">
+                CLOSE & MINIMIZE
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
