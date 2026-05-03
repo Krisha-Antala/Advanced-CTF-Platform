@@ -1,15 +1,19 @@
 from flask import Flask, render_template, request, redirect, session, jsonify, flash, url_for
 import sqlite3
 from datetime import timedelta
+import os
 import time
+from db_init import init_db
 
 app = Flask(__name__)
-app.secret_key = "ctfsecret"
+app.secret_key = os.environ.get("SECRET_KEY", "ctfsecret")
 
 
 app.permanent_session_lifetime = timedelta(minutes=15)
 
 def db():
+    if not os.path.exists("Krisha.db"):
+        init_db()
     return sqlite3.connect("Krisha.db")
 
 @app.context_processor
