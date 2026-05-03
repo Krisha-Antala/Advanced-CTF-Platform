@@ -5,3 +5,5 @@ __pycache__/
 .env
 instance/
 .pytest_cache/
+*.db
+script_check*.txt
