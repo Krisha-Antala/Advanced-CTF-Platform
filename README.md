@@ -116,7 +116,7 @@ The platform features a stunning **Cyberpunk/Sci-Fi Neon theme** with:
    ```bash
    python db_init.py
    ```
-   This creates `database.db` with:
+   This creates `Krisha.db` with:
    - Users table (for authentication)
    - Challenges table (pre-seeded with 4 challenges)
    - Submissions table (tracks solved challenges)
@@ -384,7 +384,7 @@ CTF platform/
 │   ├── Creates tables (users, challenges, submissions)
 │   └── Seeds sample challenges
 │
-├── database.db            # SQLite database file
+├── Krisha.db              # SQLite database file
 │
 ├── requirements.txt       # Python dependencies
 │

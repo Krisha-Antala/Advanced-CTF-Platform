@@ -2,10 +2,10 @@ import sqlite3
 import os
 
 # Remove old DB if exists to ensure clean slate with new schema
-if os.path.exists("database.db"):
-    os.remove("database.db")
+if os.path.exists("Krisha.db"):
+    os.remove("Krisha.db")
 
-conn = sqlite3.connect("database.db")
+conn = sqlite3.connect("Krisha.db")
 c = conn.cursor()
 
 # Users Table
@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT,
     password TEXT,
-    score INTEGER DEFAULT 0
+    score INTEGER DEFAULT 0,
+    tab_switches INTEGER DEFAULT 0,
+    ai_assisted INTEGER DEFAULT 0
 )
 """)
 

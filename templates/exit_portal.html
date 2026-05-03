@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Exit Portal - CTF Platform{% endblock %}
+
+{% block content %}
+<div style="height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card"
+        style="max-width: 500px; width: 100%; text-align: center; padding: 40px; border: 2px solid var(--color-error); box-shadow: 0 0 30px rgba(255, 51, 102, 0.2);">
+        <h1 class="glitch-header" data-text="EXIT PORTAL" style="color: var(--color-error); margin-bottom: 20px;">EXIT
+            PORTAL</h1>
+        <p style="color: var(--color-text-muted); margin-bottom: 30px;">
+            Enter <strong>"Exit"</strong> to terminate the session and stop the platform.
+        </p>
+
+        <div style="margin-bottom: 25px;">
+            <input type="password" id="exit-pass" placeholder="TERMINATION PASSWORD"
+                style="width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-error); color: var(--color-error); font-family: 'Courier New', Courier, monospace; letter-spacing: 5px; text-align: center; border-radius: 4px;">
+        </div>
+
+        <div id="error-msg" style="color: var(--color-error); margin-bottom: 20px; font-weight: bold; display: none;">
+            UNAUTHORIZED ACCESS DETECTED
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <a href="/dashboard" style="text-decoration: none;">
+                <button
+                    style="background: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); padding: 12px 25px;">CANCEL</button>
+            </a>
+            <button onclick="attemptTermination()"
+                style="background: var(--color-error); border: none; color: white; padding: 12px 25px; font-weight: bold;">TERMINATE
+                SESSION</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function attemptTermination() {
+        const pass = document.getElementById('exit-pass').value;
+        const EXIT_PASSWORD = "Exit";
+        const errorMsg = document.getElementById('error-msg');
+
+        if (pass === EXIT_PASSWORD) {
+            // Trigger the Thank You Modal first for a smooth transition
+            const modal = document.getElementById('thank-you-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Wait 2 seconds then close
+                setTimeout(() => {
+                    if (window.pywebview && window.pywebview.api) {
+                        window.pywebview.api.close_app();
+                    } else {
+                        window.location.href = '/logout';
+                    }
+                }, 2000);
+            } else {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.close_app();
+                } else {
+                    window.location.href = '/logout';
+                }
+            }
+        } else {
+            errorMsg.style.display = 'block';
+            document.getElementById('exit-pass').style.boxShadow = "0 0 15px var(--color-error)";
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+                document.getElementById('exit-pass').style.boxShadow = "none";
+            }, 3000);
+        }
+    }
+
+    // Allow Enter key to submit
+    document.getElementById('exit-pass').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            attemptTermination();
+        }
+    });
+</script>
+{% endblock %}
