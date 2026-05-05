@@ -3,7 +3,7 @@ import sqlite3
 from datetime import timedelta
 import os
 import time
-from db_init import init_db
+from db_init import init_db, DB_PATH
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "ctfsecret")
@@ -12,9 +12,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "ctfsecret")
 app.permanent_session_lifetime = timedelta(minutes=15)
 
 def db():
-    if not os.path.exists("Krisha.db"):
+    if not os.path.exists(DB_PATH):
         init_db()
-    return sqlite3.connect("Krisha.db")
+    return sqlite3.connect(DB_PATH)
 
 @app.context_processor
 def inject_globals():

@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = "Krisha.db"
+DB_PATH = "/tmp/Krisha.db" if os.environ.get("VERCEL") else "Krisha.db"
 
 def init_db(reset=False):
     if reset and os.path.exists(DB_PATH):
