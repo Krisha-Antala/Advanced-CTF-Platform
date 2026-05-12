@@ -7,3 +7,4 @@ instance/
 .pytest_cache/
 *.db
 script_check*.txt
+.vercel

@@ -5,7 +5,7 @@ import os
 import time
 from db_init import init_db, DB_PATH
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="public/static", static_url_path="/static")
 app.secret_key = os.environ.get("SECRET_KEY", "ctfsecret")
 
 
