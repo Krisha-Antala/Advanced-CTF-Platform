@@ -9,25 +9,6 @@ A fully-featured **Capture The Flag (CTF) Learning Platform** with interactive c
 
 ---
 
-## 📋 Table of Contents
-
-1. [Overview](#overview)
-2. [Features](#features)
-3. [Screenshots](#screenshots)
-4. [Installation](#installation)
-5. [Usage](#usage)
-6. [Challenges](#challenges)
-7. [Security Features](#security-features)
-8. [Theme & UI](#theme--ui)
-9. [Database Schema](#database-schema)
-10. [API Routes](#api-routes)
-11. [Project Structure](#project-structure)
-12. [Configuration](#configuration)
-13. [Contributing](#contributing)
-14. [License](#license)
-
----
-
 ## 🔍 Overview
 
 This CTF Platform is designed for **learning and practicing cybersecurity concepts** in a safe, controlled environment. It simulates real-world vulnerabilities including:
