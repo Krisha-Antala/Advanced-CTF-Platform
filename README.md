@@ -9,7 +9,7 @@ A fully-featured **Capture The Flag (CTF) Learning Platform** with interactive c
 
 ---
 
-## 🔍 Overview
+##  Overview
 
 This CTF Platform is designed for **learning and practicing cybersecurity concepts** in a safe, controlled environment. It simulates real-world vulnerabilities including:
 
@@ -22,7 +22,7 @@ Each challenge is interactive with step-by-step guidance, making it perfect for 
 
 ---
 
-## ✨ Features
+##  Features
 
 ### Core Functionality
 | Feature | Description |
@@ -43,15 +43,15 @@ Each challenge is interactive with step-by-step guidance, making it perfect for 
 | Crypto Challenge | Cryptography | 100 | Decrypt a dynamically generated Caesar cipher message |
 
 ### Anti-Cheating & Bot Protection
-- 🤖 **Honeypot Fields**: Hidden form fields to detect automated bots
-- ⏱️ **Solve Time Tracking**: Records how long each challenge takes
-- 🔄 **Attempt Limiting**: Configurable max attempts before CAPTCHA
-- 🧮 **CAPTCHA System**: Simple math verification when suspicious activity detected
-- 🎯 **Dynamic Flags**: Crypto challenge generates unique flags per session
+-  **Honeypot Fields**: Hidden form fields to detect automated bots
+-  **Solve Time Tracking**: Records how long each challenge takes
+-  **Attempt Limiting**: Configurable max attempts before CAPTCHA
+-  **CAPTCHA System**: Simple math verification when suspicious activity detected
+-  **Dynamic Flags**: Crypto challenge generates unique flags per session
 
 ---
 
-## 🖥️ Screenshots
+##  Screenshots
 
 The platform features a stunning **Cyberpunk/Sci-Fi Neon theme** with:
 - Dark blue/black background (#0b1021)
@@ -63,7 +63,7 @@ The platform features a stunning **Cyberpunk/Sci-Fi Neon theme** with:
 
 ---
 
-## 📦 Installation
+##  Installation
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -132,7 +132,7 @@ Login/Register → Dashboard → Select Challenge → Solve → Submit Flag → 
 
 ---
 
-## 🔓 Challenges
+##  Challenges
 
 ### Challenge 1: Basic Injection (SQL Injection)
 **Objective**: Bypass the Admin Login Panel
@@ -224,7 +224,7 @@ Flag:       CTF{DEFGHI9U}
 
 ---
 
-## 🛡️ Security Features
+##  Security Features
 
 ### Honeypot Detection
 ```html
@@ -244,7 +244,7 @@ if f"start_{cid}" not in session:
 
 ### CAPTCHA System
 ```
-⚠️ Security Check: What is 3 + 4?
+ Security Check: What is 3 + 4?
 ```
 - Triggered when suspicious activity detected
 - Simple math problem to verify human presence
@@ -256,7 +256,7 @@ if f"start_{cid}" not in session:
 
 ---
 
-## 🎨 Theme & UI
+##  Theme & UI
 
 ### Color Palette
 | Variable | Color | Usage |
@@ -291,7 +291,7 @@ if f"start_{cid}" not in session:
 
 ---
 
-## 🗄️ Database Schema
+##  Database Schema
 
 ### Users Table
 ```sql
@@ -350,7 +350,7 @@ CREATE TABLE submissions (
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 CTF platform/
@@ -420,7 +420,7 @@ app.secret_key = "your-secret-key"  # Change in production!
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/new-challenge`)
@@ -434,12 +434,6 @@ app.secret_key = "your-secret-key"  # Change in production!
 - Add challenge categories/tags
 - Create admin panel for managing challenges
 - Add hints system with point deductions
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
