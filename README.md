@@ -1,4 +1,4 @@
-# 🚩 CTF Platform
+#  CTF Platform
 
 A fully-featured **Capture The Flag (CTF) Learning Platform** with interactive cybersecurity challenges, built with Flask and styled with a stunning **Cyberpunk/Hacker aesthetic**.
 
